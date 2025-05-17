@@ -1,63 +1,82 @@
-Pi Project Switcher
-A simple tool for managing isolated project environments on Raspberry Pi.
+# 🛠️ Pi Project Switcher
 
-✨ Features
-🔄 Context-based project switching with environment variable loading
+A lightweight, no-bloat tool for managing isolated project environments on your Raspberry Pi.
 
-🐍 Per-project virtual environment activation and clean deactivation
+Think of it as your **context switcher with manners** — easily moving between projects, activating venvs, and loading configurations without path hell.
 
-🏗️ Standardized project folder scaffolding
+---
 
-🗂️ JSON-based registry for tracking projects and configurations
+## ✨ Features
+- 🔄 Context-based project switching with environment variable loading
+- 🐍 Per-project virtual environment activation & clean deactivation
+- 🏗️ Standardized project scaffolding with `pi-newproject.sh`
+- 🗂️ JSON-based project registry to track paths & venv status
+- 🚀 Expandable for future integrations (GitHub, Azure DevOps, Checkin Tools)
 
-🚀 Expandable for task automation, check-in tools, and external integrations
+---
 
-📁 Folder Structure
+## 📁 Folder Structure
 pi-project-switcher/
-scripts/
-pi-switch.sh
-pi-newproject.sh
-examples/
-sandbox_cheatsheet.md
-README.md
+  scripts/
+    pi-switch.sh
+    pi-newproject.sh
+  examples/
+    sandbox_cheatsheet.md
+  .gitignore
+  LICENSE
+  README.md
+  CONTRIBUTING.md
+  CHANGELOG.md
+  ROADMAP.md
 
-🛠️ Usage
-Create a New Project:
-./scripts/pi-newproject.sh <projectname>
+---
 
-Switch to a Project Context:
-source ./scripts/pi-switch.sh <projectname>
+## 🚀 Usage
 
-Venv Handling:
+➡️ **Switch to a Project**
+  source ./scripts/pi-switch.sh <projectname>
 
-🛡️ Existing venv is deactivated when switching projects
+➡️ **Create a New Project**
+  ./scripts/pi-newproject.sh <projectname>
 
-✅ Target project's venv is activated if configured in projects.json
+➡️ **Alias for Convenience**
+  alias piswitch='source ~/pi-switch.sh'
+  piswitch sandbox
 
-🚫 Projects without a venv are handled cleanly
+---
 
-Example Alias for Convenience:
-alias piswitch='source ~/pi-project-switcher/scripts/pi-switch.sh'
+## 🐍 Venv Handling
+- Deactivates any active venv when switching projects
+- Activates target project's venv if configured in `projects.json`
+- Projects without venv config are handled cleanly without error
 
-Then use:
-piswitch sandbox
+---
 
-⚙️ Configuration
-Projects and their configurations are managed in:
-~/.pi-project-switcher/projects.json
+## ⚙️ Configuration
+- Registry managed in: `~/.pi-project-switcher/projects.json`
+- Example entry:
+  "myproject": {
+    "path": "/home/pi/projects/myproject",
+    "venv": true
+  }
 
-Example entry:
-"myproject": {
-"path": "/home/pi/projects/myproject",
-"venv": true
-}
+---
 
-🗺️ Roadmap
-🔌 Adapter support for GitHub, Azure DevOps, and other platforms
+## 🛣️ Roadmap Highlights
+- Integrate Pi Checkin Tool for structured end-of-day task logging
+- Adapter support for GitHub / Azure DevOps
+- Template-based scaffolding profiles (e.g., VibeCRM)
+- Enhanced project context management
+- Optional project dashboards
 
-📝 Integrated Pi Checkin Tool for end-of-day task tracking
+---
 
-🧰 Template-based project scaffolding for common use cases
+## 🤝 Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
-📝 License
-MIT License
+---
+
+## 📜 License
+MIT License. Because tools should stay fixable by their users.
+
+---
