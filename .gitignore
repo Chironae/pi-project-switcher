@@ -1,0 +1,21 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual Environments
+venv/
+*/venv/
+
+# Local project registry (user-specific)
+~/.pi-project-switcher/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
+
+# IDE files
+.vscode/
+.idea/
