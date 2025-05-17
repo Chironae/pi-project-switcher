@@ -1,110 +1,62 @@
-🛠️ Sandbox Command Pack (Pi Project Switcher)
-🚀 Switching to Sandbox (Project Context)
-Run:
+# Sandbox Cheatsheet
 
-~/pi-switch.sh sandbox
+Your quick reference guide for working with the Sandbox project using Pi Project Switcher.
 
-🐍 Activating Sandbox venv Manually
-Run:
+## 🔄 Switching to Sandbox
 
-source ~/projects/sandbox/venv/bin/activate
+- Switch to Sandbox context:
+  source ~/pi-switch.sh sandbox
 
-📝 Creating a Handy Alias for Sandbox venv Activation
-Run:
+- Recommended alias for easy switching:
+  alias piswitch='source ~/pi-switch.sh'
+  piswitch sandbox
 
-echo "alias sandboxvenv='source ~/projects/sandbox/venv/bin/activate'" >> ~/.bashrc
+## 🐍 Venv Handling
 
-source ~/.bashrc
+- Activates Sandbox's venv on switch
+- Cleanly deactivates existing venv before activating Sandbox
+- Projects without a venv will still trigger a deactivate to keep the environment clean
 
-Then later:
+## 🏗️ Creating a New Project
 
-sandboxvenv
+- Scaffold a new project with:
+  ~/pi-newproject.sh <projectname>
 
-🏗️ Creating a New Project Scaffold (pi-newproject)
-Run:
+- Creates standard folders:
+  config/
+  data/
+  docs/
+  scripts/
+  venv/ (empty, ready to init)
 
-~/pi-newproject.sh <projectname>
+## 🐍 Setting up venv for New Projects
 
-Example:
+- Initialize the venv:
+  python3 -m venv venv
 
-~/pi-newproject.sh testproj
+- Update projects.json to activate venv switching:
+  "newproject": {
+    "path": "/home/pi/projects/newproject",
+    "venv": true
+  }
 
-🛠️ Updating Registry to Enable venv Activation
-Run:
+## 🗂️ Project Registry
 
-jq '.projects.sandbox.venv = true' ~/.pi-project-switcher/projects.json > ~/.pi-project-switcher/tmp.json && mv ~/.pi-project-switcher/tmp.json ~/.pi-project-switcher/projects.json
+- Managed in ~/.pi-project-switcher/projects.json
+- Controls which projects have venv activation
+- Ensures clean context switches between projects
 
-🌐 Linking to a Git Remote
-Run:
+## 🛡️ Context Behavior
 
-git remote add origin https://github.com/yourusername/yourrepo.git
+- Switching to a project:
+  - Changes working directory
+  - Deactivates active venv (if any)
+  - Activates target project venv (if configured)
+  - Loads project-specific environment variables (future feature)
 
-git push -u origin master
+## 💡 Pro Tips
 
-🔗 Checking Git Remote Connection
-Run:
-
-git remote -v
-
-🐍 Creating venv in Sandbox
-Run:
-
-cd ~/projects/sandbox
-
-python3 -m venv venv
-
-📦 Upgrading Pip Inside venv
-Run:
-
-./venv/bin/pip install --upgrade pip setuptools wheel
-
-📦 Installing Packages in venv (Example: requests)
-Run:
-
-./venv/bin/pip install requests
-
-🕒 Setting Up Weekly apt Upgrade Reminder (Crontab)
-Run:
-
-crontab -e
-
-Inside crontab, add:
-
-@weekly /usr/bin/apt update && /usr/bin/apt list --upgradable
-
-Confirm with:
-
-crontab -l
-
-🕵️ Verifying Python & Pip Point to venv
-Run:
-
-which python
-
-which pip
-
-Expected Output:
-
-/home/pi/projects/sandbox/venv/bin/python
-
-/home/pi/projects/sandbox/venv/bin/pip
-
-🔍 Git Status Check
-Run:
-
-git status
-
-📝 Initial Commit Example
-Run:
-
-git add .
-
-git commit -m "Initial commit: Sandbox scaffolded."
-
-✅ Final Notes
-🏖️ Sandbox is your safe zone for testing Pi Project Switcher workflows.
-
-💡 Pro Tip
-To scaffold more projects cleanly:
-
-~/pi-newproject.sh <newprojectname>
+- Use piswitch <projectname> for all project switching
+- Confirm active venv with:
+  echo $VIRTUAL_ENV
+- Avoid manual cd’ing into project folders—always use the switcher for clean context
