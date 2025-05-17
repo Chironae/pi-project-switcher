@@ -16,6 +16,8 @@ Think of it as your **context switcher with manners** — easily moving between 
 ---
 
 ## 📁 Folder Structure
+
+```
 pi-project-switcher/
   scripts/
     pi-switch.sh
@@ -28,7 +30,7 @@ pi-project-switcher/
   CONTRIBUTING.md
   CHANGELOG.md
   ROADMAP.md
-
+```
 ---
 
 ## 🚀 Usage
