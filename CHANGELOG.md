@@ -17,3 +17,6 @@
 - ✅ CLI project scaffolding via `--type cli`
 - ✅ `README`, `LICENSE`, and project docs finalized
 - ✅ Project is ready for public use
+- 🛠 Fixed symlink path resolution for `$SWITCHER_ROOT`
+- 🐛 Resolved bug where release script pointed to `/usr/local/` instead of project path
+- ✅ Verified `release` and `make release-docs` workflows run cleanly
