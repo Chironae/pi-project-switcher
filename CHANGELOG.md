@@ -4,10 +4,6 @@
 - _Coming soon_
 
 
-## [v1.0.2] - 2025-05-18
-- _Coming soon_
-
-
 ## [v1.0.1] - 2025-05-18
 - ✅ Added full support for `.env.defaults`, `.env`, and `.env.sh` loading
 - ✅ Tracked all environment keys via `last_env_keys.txt`
