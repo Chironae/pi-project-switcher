@@ -2,7 +2,14 @@
 
 PROJECTS_FILE="$HOME/.pi-project-switcher/projects.json"
 PROJECTS_DIR="$HOME/projects"
-SWITCHER_ROOT="$(cd "$(dirname "$0")"/.. && pwd)"
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+SWITCHER_ROOT="$(cd -P "$(dirname "$SOURCE")/.." >/dev/null 2>&1 && pwd)"
+echo "💡 SWITCHER_ROOT is: $SWITCHER_ROOT"
 ENV_TRACKER_FILE="$HOME/.pi-project-switcher/last_env_keys.txt"
 
 ensure_registry() {
@@ -219,6 +226,44 @@ set_default_project() {
   echo "⭐ Default project set to '$name'"
 }
 
+get_git_config() {
+  CONFIG_FILE="$HOME/.pi-switcher/git-config.json"
+  if [ ! -f "$CONFIG_FILE" ]; then
+    echo "❌ Git config not found. Create one with: pi-switcher git-config init"
+    exit 1
+  fi
+}
+
+cmd_git_config() {
+  get_git_config
+
+  case "$1" in
+    set)
+      key="$2"
+      value="$3"
+      if [[ -z "$key" || -z "$value" ]]; then
+        echo "Usage: pi-switcher git-config set <key> <value>"
+        exit 1
+      fi
+      jq --arg k "$key" --arg v "$value" '.[$k] = $v' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+      echo "✅ Set $key = $value"
+      ;;
+    unset)
+      key="$2"
+      if [[ -z "$key" ]]; then
+        echo "Usage: pi-switcher git-config unset <key>"
+        exit 1
+      fi
+      jq "del(.$key)" "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+      echo "🗑️  Removed $key"
+      ;;
+    *)
+      echo "📄 Current Git Config:"
+      jq . "$CONFIG_FILE"
+      ;;
+  esac
+}
+
 case "$1" in
   new)
     shift
@@ -258,6 +303,25 @@ case "$1" in
     else
       echo "ℹ️  No tracked environment variables to clean."
     fi
+    ;;
+  release)
+    shift
+    bash "$SWITCHER_ROOT/scripts/release/finalize_release.sh"
+    ;;
+  git-config)
+    shift
+    cmd_git_config "$@"
+    ;;
+  git-audit)
+    shift
+    bash "$SWITCHER_ROOT/scripts/git/git_audit.sh" "$@"
+    ;;
+  ssh-keys)
+    shift
+    bash "$SWITCHER_ROOT/scripts/git/manage_ssh_keys.sh" "$@"
+    ;;
+  ssh-config)
+    bash "$SWITCHER_ROOT/scripts/git/sync_ssh_config.sh"
     ;;
   help|*)
     [[ "$1" == "help" ]] && echo -e "📖 Help Menu\n" || echo -e "🤷‍♂️  Unknown command: '$1'\n"
