@@ -3,6 +3,13 @@
 ## [Unreleased]
 - _Coming soon_
 
+## [v1.0.2] - 2025-05-20
+- ✅ SSH key profile manager with `pi-switcher ssh-keys`
+- ✅ Identity-aware `.ssh/config` generator with `pi-switcher ssh-config`
+- ✅ Timestamped backup of `.ssh/config`
+- ✅ CLI removal and cleanup of SSH key entries
+- ✅ GitHub SSH enforcement and branch audit via `pi-switcher git-audit`
+- ✅ Verified SSH keygen and config update workflows
 
 ## [v1.0.1] - 2025-05-18
 - ✅ Added full support for `.env.defaults`, `.env`, and `.env.sh` loading
