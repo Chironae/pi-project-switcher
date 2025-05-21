@@ -18,34 +18,42 @@ AUTH_METHOD=$(jq -r '.auth_method // "ssh"' "$CONFIG_FILE")
 
 echo "🔍 Scanning projects in $PROJECTS_DIR"
 echo
+LOG_FILE="$HOME/projects/pi-project-switcher/logs/git_audit.log"
+> "$LOG_FILE"
 
 for dir in "$PROJECTS_DIR"/*; do
   [ -d "$dir/.git" ] || continue
-  echo "📁 Project: $(basename "$dir")"
-
+  PROJECT=$(basename "$dir")
   cd "$dir" || continue
 
-  BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  REMOTE=$(git remote get-url origin 2>/dev/null || echo "(no remote)")
+  BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "UNKNOWN")
+  REMOTE=$(git remote get-url origin 2>/dev/null || echo "none")
 
-  echo "   • Branch: $BRANCH"
-  echo "   • Remote: $REMOTE"
+  STATUS="OK"
+  BADGE="[✔]"
 
-  # Flag wrong branch
   if [ "$BRANCH" != "$DEFAULT_BRANCH" ]; then
-    echo "   ⚠️ Branch mismatch: expected $DEFAULT_BRANCH"
+    STATUS="wrong branch"
+    BADGE="[⚠]"
   fi
 
-  # Flag non-SSH usage
-  if [ "$AUTH_METHOD" == "ssh" ] && [[ "$REMOTE" =~ ^https:// ]]; then
-    echo "   ⚠️ Remote uses HTTPS, expected SSH"
-
+  if [[ "$REMOTE" == "none" ]]; then
+    STATUS="missing remote"
+    BADGE="[⚠]"
+  elif [[ "$AUTH_METHOD" == "ssh" && "$REMOTE" =~ ^https:// ]]; then
+    STATUS="https remote"
+    BADGE="[⚠]"
     if [ "$USE_FIX" = true ]; then
-      ssh_url=$(echo "$REMOTE" | sed -E 's|https://github.com/|git@github.com:|; s|\.git$||').git
+      ssh_url=$(echo "$REMOTE" | sed -E 's|https://github.com/|git@github.com:|; s|\.git$||')
       git remote set-url origin "$ssh_url"
-      echo "   🔧 Remote updated to SSH: $ssh_url"
+      STATUS="fixed to SSH"
+      BADGE="[🔧]"
     fi
   fi
 
-  echo
+  LINE=$(printf "%-22s | branch: %-10s | remote: %-40s | status: %s" \
+    "$BADGE $PROJECT" "$BRANCH" "$REMOTE" "$STATUS")
+  echo "$LINE" | tee -a "$LOG_FILE"
+
 done
+

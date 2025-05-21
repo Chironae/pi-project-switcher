@@ -4,6 +4,10 @@
 - _Coming soon_
 
 
+## [v1.0.3] - 2025-05-20
+- _Coming soon_
+
+
 ## [v1.0.2] - 2025-05-20
 - ✅ SSH key profile manager with `pi-switcher ssh-keys`
 - ✅ Identity-aware `.ssh/config` generator with `pi-switcher ssh-config`
